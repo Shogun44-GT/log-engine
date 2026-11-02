@@ -1,0 +1,11 @@
+2026-11-03T08:00:01 | INFO | 192.168.1.10:443/TCP | alice | {"action": "login", "status": "success"}
+2026-11-03T08:00:05 | INFO | 192.168.1.11:443/TCP | bob | {"action": "view", "page": "/dashboard"}
+2026-11-03T08:01:10 | WARNING | 10.0.0.5:22/TCP | root | {"action": "login", "status": "failed"}
+2026-11-03T08:01:12 | WARNING | 10.0.0.5:22/TCP | root | {"action": "login", "status": "failed"}
+2026-11-03T08:01:14 | WARNING | 10.0.0.5:22/TCP | root | {"action": "login", "status": "failed"}
+
+2026-11-03T08:01:16 | ERROR | 10.0.0.5:22/TCP | root | {"action": "login", "status": "failed"}
+2026-11-03T08:01:18 | CRITICAL | 10.0.0.5:22/TCP | root | {"action": "login", "status": "failed"}
+2026-11-03T08:02:00 | ERROR | 172.16.0.3:8080/HTTP | carol | {"code": 500, "message": "Internal Server Error"}
+ligne corrompue sans aucun séparateur
+2026-11-03T08:03:00 | INFO | 192.168.1.10:53/UDP | alice | DNS query example.com

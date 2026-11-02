@@ -1,0 +1,9 @@
+2026-11-03T09:00:00 | INFO | 192.168.1.12:443/TCP | dave | {"action": "login", "status": "success"}
+2026-11-03T09:00:30 | DEBUG | 192.168.1.12:443/TCP | dave | niveau inconnu, doit être rejeté
+2026-11-03T09:01:00 | ERROR | 203.0.113.7:3306/TCP | admin | {"code": 1045, "message": "Access denied"}
+2026-11-03T09:01:05 | error | 203.0.113.7:3306/TCP | admin | {"code": 1045, "message": "Access denied"}
+2026-11-03T09:02:00 | WARNING | 198.51.100.4:80/HTTP | guest | {payload json cassé
+2026-13-45T99:00:00 | INFO | 192.168.1.12:443/TCP | dave | date invalide
+2026-11-03T09:03:00 | INFO | 192.168.1.12:443/TCP | dave | message | avec | des pipes
+2026-11-03T09:04:00 | CRITICAL | 198.51.100.4:abc/TCP | guest | port invalide
+2026-11-03T09:05:00 | INFO | 192.168.1.13:443/TCP | erin | {"action": "logout"}
