@@ -1,4 +1,4 @@
-"""Module 1 : ingestion des logs par générateurs et parsing en dictionnaires."""
+"""Module 1 : ingestion des logs par générateurs et parsing."""
 
 from __future__ import annotations
 
