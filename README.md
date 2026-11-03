@@ -55,12 +55,33 @@ from log_engine.ingestion import LogEntry, parse_logs, read_multiple_logs
 entries = parse_logs(read_multiple_logs(["data/server_a.log", "data/server_b.log"]))
 ```
 
+## Sortie du module 2 (entrée des modules 3 et 4)
+
+`transform(entries)` renvoie un itérable de `TransformedEntry` : le `LogEntry` nettoyé, sans `None`, plus trois clés.
+
+| Clé       | Type  | Exemple                                         |
+|-----------|-------|-------------------------------------------------|
+| `summary` | `str` | `"[2026-11-03 08:01:10] WARNING  root@10.0.0.5:22/TCP"` |
+| `channel` | `str` | `auth`, `auth_failure`, `error`, `event`, `raw`, `unknown` |
+| `target`  | `str` | `"10.0.0.5:22/TCP"`                             |
+
+- `user` est en minuscules, `level` en majuscules.
+- Dans un payload dict, les clés sont en minuscules, et les valeurs de `action` / `status` aussi.
+- Brute-force (module 3) : filtrer sur `entry["channel"] == "auth_failure"`.
+
+```python
+from log_engine.ingestion import parse_logs, read_multiple_logs
+from log_engine.transform import transform
+
+entries = transform(parse_logs(read_multiple_logs(["data/server_a.log"])))
+```
+
 ## Arborescence
 
 ```
 log_engine/
   ingestion.py     module 1  générateurs + parsing          (Joan)
-  transform.py     module 2  filter / map / lambda / match   (Joseph)
+  transform.py     module 2  filter / map / lambda / match   (Joan)
   aggregation.py   module 3  sets, defaultdict, brute-force  (Youness)
   rules.py         module 4  apply_security_rules + audit    (Mathis)
 data/              jeux de logs de test
@@ -70,6 +91,6 @@ main.py            point d'entrée du pipeline
 
 ## Workflow Git
 
-- Une branche par module : `module-2-transform`, `module-3-aggregation`, `module-4-rules`.
+- Une branche par module : `module-3-aggregation` (Youness), `module-4-rules` (Mathis).
 - Chacun ne touche que son fichier et son fichier de test.
 - Pull request vers `main` dès que le module passe ses tests ; Joan merge et branche le module dans `main.py`.
