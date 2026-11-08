@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 data/_big_test.log
 .ipynb_checkpoints/
+audit.json
