@@ -55,11 +55,17 @@ def main(argv: list[str] | None = None) -> int:
         alerts = entry["alerts"]
         if alerts:
             alerted += 1
-        print(f"{entry['summary']}  [{entry['channel']}] {entry['payload']}", end="")
+        print(
+            f"{entry['summary']}  [{entry['channel']}] {entry['payload']}",
+            end="",
+        )
         if alerts:
             print(f"  ALERTES: {', '.join(alerts)}", end="")
         print()
-    print(f"\n{count} entrées valides après transformation, {alerted} avec alerte(s)")
+    print(
+        f"\n{count} entrées valides après transformation, "
+        f"{alerted} avec alerte(s)"
+    )
 
     # Passe 2 — module 3 : agrégation (nouvelle lecture, toujours en flux).
     report = analyze(build_pipeline(args.files), blacklist=BLACKLIST)

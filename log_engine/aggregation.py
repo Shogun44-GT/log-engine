@@ -138,7 +138,8 @@ def analyze(
 
             streak = streaks.get(ip)
             if streak is None:
-                streak = BruteForceAlert(ip, entry["timestamp"], entry["timestamp"])
+                stamp = entry["timestamp"]
+                streak = BruteForceAlert(ip, stamp, stamp)
                 streaks[ip] = streak
             streak.attempts += 1
             streak.last_seen = entry["timestamp"]
@@ -177,9 +178,12 @@ def format_report(report: AnalysisReport) -> str:
         f"Par niveau : {report.by_level}",
         f"IP en erreur       : {sorted(report.error_ips)}",
         f"IP actives         : {sorted(report.active_ips)}",
-        f"IP actives et blacklistées : {sorted(report.blacklist.intersection)}",
-        f"IP actives non blacklistées : {sorted(report.blacklist.only_active)}",
-        f"IP blacklistées inactives   : {sorted(report.blacklist.only_blacklist)}",
+        f"IP actives et blacklistées : "
+        f"{sorted(report.blacklist.intersection)}",
+        f"IP actives non blacklistées : "
+        f"{sorted(report.blacklist.only_active)}",
+        f"IP blacklistées inactives   : "
+        f"{sorted(report.blacklist.only_blacklist)}",
         f"Différence symétrique       : "
         f"{sorted(report.blacklist.symmetric_difference)}",
     ]

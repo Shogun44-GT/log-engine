@@ -287,7 +287,9 @@ def format_audit_report(report: Mapping[str, Any]) -> str:
     lines = [f"Audit du {report['generated_at']} (Python {report['python']})"]
     for key in ("globals", "locals"):
         scope = report[key]
-        kinds = ", ".join(f"{k}={v}" for k, v in sorted(scope["by_kind"].items()))
+        kinds = ", ".join(
+            f"{k}={v}" for k, v in sorted(scope["by_kind"].items())
+        )
         lines.append(f"  {key:<8}: {scope['total']} noms ({kinds}), "
                      f"{scope['total_size_bytes']} octets")
     return "\n".join(lines)

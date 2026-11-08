@@ -56,23 +56,30 @@ def make_entry(**overrides):
 class TestRegles(unittest.TestCase):
 
     def test_severity_alerte_sur_error(self):
-        self.assertEqual(rule_severity(make_entry(level="error")), "severity:ERROR")
+        self.assertEqual(
+            rule_severity(make_entry(level="error")), "severity:ERROR"
+        )
 
     def test_severity_ignore_info(self):
         self.assertIsNone(rule_severity(make_entry()))
 
     def test_severity_niveaux_configurables(self):
         self.assertIsNotNone(
-            rule_severity(make_entry(level="WARNING"), alert_levels={"WARNING"}))
+            rule_severity(
+                make_entry(level="WARNING"), alert_levels={"WARNING"}
+            )
+        )
 
     def test_blacklist(self):
         entry = make_entry(ip="10.0.0.5")
         self.assertEqual(rule_blacklisted_ip(entry, blacklist=BLACKLIST),
                          "blacklisted_ip:10.0.0.5")
-        self.assertIsNone(rule_blacklisted_ip(entry))  # blacklist vide par défaut
+        self.assertIsNone(rule_blacklisted_ip(entry))
 
     def test_auth_failure(self):
-        self.assertIsNotNone(rule_auth_failure(make_entry(channel="auth_failure")))
+        self.assertIsNotNone(
+            rule_auth_failure(make_entry(channel="auth_failure"))
+        )
         self.assertIsNone(rule_auth_failure(make_entry()))
 
     def test_payload_str_et_dict(self):
@@ -91,8 +98,8 @@ class TestRegles(unittest.TestCase):
     def test_off_hours(self):
         night = make_entry(timestamp=datetime(2026, 11, 3, 3, 12))
         self.assertEqual(rule_off_hours(night), "off_hours:03:12")
-        self.assertEqual(rule_off_hours(make_entry(timestamp="2026-11-04T23:05:00")),
-                         "off_hours:23:05")
+        late = make_entry(timestamp="2026-11-04T23:05:00")
+        self.assertEqual(rule_off_hours(late), "off_hours:23:05")
         self.assertIsNone(rule_off_hours(make_entry()))
         self.assertIsNone(rule_off_hours(make_entry(timestamp="pas une date")))
 
@@ -127,13 +134,17 @@ class TestMoteur(unittest.TestCase):
 
     def test_only_alerts_et_none_ignores(self):
         data = [make_entry(), None, make_entry(level="ERROR")]
-        out = list(apply_security_rules(rule_severity, entries=data, only_alerts=True))
+        out = list(
+            apply_security_rules(rule_severity, entries=data, only_alerts=True)
+        )
         self.assertEqual(len(out), 1)
 
     def test_regle_lambda_acceptee(self):
-        admin = lambda e, **_: (  # noqa: E731
-            "admin" if e.get("user") == "root" else None)
-        out = list(apply_security_rules(admin, entries=[make_entry(user="root")]))
+        def admin(e, **_):
+            return "admin" if e.get("user") == "root" else None
+
+        entries = [make_entry(user="root")]
+        out = list(apply_security_rules(admin, entries=entries))
         self.assertEqual(out[0]["alerts"], ("admin",))
 
     def test_sans_regle_utilise_toutes_les_regles(self):
@@ -148,7 +159,9 @@ class TestMoteur(unittest.TestCase):
         out = list(apply_security_rules(boom, entries=[make_entry()]))
         self.assertEqual(out[0]["alerts"], ("rule_error:boom:KeyError",))
         with self.assertRaises(KeyError):
-            list(apply_security_rules(boom, entries=[make_entry()], strict=True))
+            list(
+                apply_security_rules(boom, entries=[make_entry()], strict=True)
+            )
 
     def test_erreurs_d_arguments_immediates(self):
         with self.assertRaises(TypeError):
@@ -158,7 +171,10 @@ class TestMoteur(unittest.TestCase):
 
     def test_brute_force_donnees_de_test(self):
         """Les 5 échecs sur 10.0.0.5 doivent tous ressortir."""
-        data = [make_entry(ip="10.0.0.5", channel="auth_failure") for _ in range(5)]
+        data = [
+            make_entry(ip="10.0.0.5", channel="auth_failure")
+            for _ in range(5)
+        ]
         data += [make_entry() for _ in range(10)]
         out = list(apply_security_rules(rule_auth_failure, entries=data,
                                         only_alerts=True))
@@ -169,9 +185,11 @@ class TestIntrospection(unittest.TestCase):
 
     def test_discover_rules_via_globals(self):
         names = {f.__name__ for f in discover_rules()}
-        self.assertEqual(names, {"rule_severity", "rule_blacklisted_ip",
-                                 "rule_auth_failure", "rule_suspicious_payload",
-                                 "rule_off_hours", "rule_sensitive_port"})
+        expected = {
+            "rule_severity", "rule_blacklisted_ip", "rule_auth_failure",
+            "rule_suspicious_payload", "rule_off_hours", "rule_sensitive_port",
+        }
+        self.assertEqual(names, expected)
 
     def test_discover_rules_espace_externe(self):
         ns = {"rule_custom": lambda e, **_: None, "autre": 42}
@@ -203,7 +221,8 @@ class TestIntrospection(unittest.TestCase):
     def test_export_json_et_format(self):
         report = audit_runtime(vars(rules), {"x": 1})
         with tempfile.TemporaryDirectory() as tmp:
-            path = export_audit_report(report, Path(tmp) / "out" / "audit.json")
+            target = Path(tmp) / "out" / "audit.json"
+            path = export_audit_report(report, target)
             loaded = json.loads(path.read_text(encoding="utf-8"))
         self.assertEqual(loaded["locals"]["total"], 1)
         self.assertIn("globals", format_audit_report(report))

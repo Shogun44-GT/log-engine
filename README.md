@@ -100,3 +100,9 @@ main.py            point d'entrée du pipeline
 - Une branche par module : `module-3-aggregation` (Youness), `module-4-rules` (Mathis).
 - Chacun ne touche que son fichier et son fichier de test.
 - Pull request vers `main` dès que le module passe ses tests ; Joan merge et branche le module dans `main.py`.
+
+## Rapport
+
+Le rapport final est dans `notebooks/rapport.ipynb` (déjà exécuté) et
+`notebooks/rapport.pdf`. Pour le relancer : `pip install notebook`,
+puis `jupyter notebook notebooks/rapport.ipynb`.
