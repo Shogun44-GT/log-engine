@@ -15,8 +15,14 @@ pip install -r requirements.txt
 ```bash
 python main.py                          # tous les fichiers de data/
 python main.py data/server_a.log        # un fichier précis
+python main.py --audit audit.json       # exporte le rapport d'audit JSON
 python -m unittest -v                   # tests
 ```
+
+`main.py` pilote l'ensemble du pipeline : ingestion -> transformation
+-> règles de sécurité (module 4, alertes affichées entrée par entrée)
+-> agrégation (module 3, rapport : IP en erreur, compteurs, force brute)
+-> audit d'introspection (globals() / locals()).
 
 ## Format d'une ligne de log
 
